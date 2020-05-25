@@ -1,0 +1,76 @@
+Wymagane przełączniki/flagi. Domyślnie programy wczytują dane z **stdin** i wypisują na **stdout** o ile nie jest podane inaczej w treści. Wszystkie muszą mieć **-h** jako pomoc. '*' są zdefiniowane dodatkowe, nie do konca wymagane przełączniki.
+**1. Fiszki**
+Argumenty wskazują na pliku ze słówkami. (treść zadania). Pomijamy podawanie 
+- Zdefiniowanie separatora słówek
+- Uczenie odwrotne. Podawane obce a nie rodzime jako pytanie.
+- Czy słowa mają zostać wypowiadane.
+- Czy słowo ma zostać podane na ekran (uczenie tylko ze słuchu)
+**2. Usuwanie powtórzeń**
+Argumenty jako lokacje/pliki
+- Porownywanie po nazwie czy zawartosci
+- pokaz tylko informacje
+- usun jeden z plikow
+- usun jeden z plikow, wymaga potwierdzenia
+**3. Katalog HTML**
+Argumenty jako lokacje/pliki
+- Nowa sekcja z plikami o danym rozszerzeniu. Moze byc wiele nowych sekcji
+- Sortowanie rosnace
+- Sortowanie malejace
+- Brak sortowaia (ta i 2 wyrzej moga zostac zawarte w jednej fladze jak chcecie)
+**4. Punkty za słowo**
+Słowa jako argumenty. Jak nie ma argumentow slownych, bierze stdin.
+- Lokacja innego słownika który będziemy sprawdzali.
+- Nie licz niepoprawnych słow.
+- Nie wyświetlaj niepoprawnych słów.
+**5. Graf systemu plików**
+- Stwórz tylko plik DOT. Nie rób grafu.
+- Tylko pliki (bez linkow) (domyslnie oba mają byc)
+- Tylko linki (bez normalnych plikow) (domyslnie oba mają byc)
+**6. Histogram**
+- Wypisz w formacie tekstowym
+- Wypisz jako .csv
+- Zapisz do pliku (jak nie to wypisuje na stdout)
+**7. Kółko i krzyżyk**
+- Czy mamy pierwszy ruch czy nie
+- Czy gramy kółkami czy krzyżykami
+- Redefinicja znaku kółka
+- Redefinicja znaku krzyżyka
+* Czy ma grać losowo czy jakaś strategia jaką sobie zrobicie. Nie jest wymagane, może być 100% losowy.
+**8. Konkordancja**
+- Wypisz w formacie tekstowym
+- Wypisz jako .csv
+- Zapisz do pliku (jak nie to wypisuje na stdout)
+- Nie wypisuj powtarzającego się słowa. Nadal wszystkie linie maja byc wypisane.
+**9. Czekanie na zmiany**
+- Plik ze stronami internetowymi
+- Ustaw długość oczekiwania na ponowne sprawdzenie.
+- Podaj przeglądarkę w której ma być otwierana strona.
+- Zakoncz jak będzie zmiana.
+- Zapisuj w log a nie otwieraj strone
+- Powadamiaj o zmianach na ekranie, nie otwieraj przegladarki (mozna polaczyc z przelacznikiem wyzej)
+**10. Podsumowanie**
+- nie licz sredniej
+- nie licz minimum
+- nie licz maximum (mozecie jakos polaczyc te 3 w jedna)
+**11. Zgadywanie stringów**
+- Strategia dynamiczna
+- Strategia losowa
+- male litery
+- male i duze litery
+- Wyswietlaj kazdy krok zgadywania a nie tylko ostatni (takie verbose)
+* male i duze litery i cyfry
+**12. Wstęp do plików dźwiękowych**
+- Definicja innego prefixu
+- Dany plik jako wstep dzwiekowy
+- Tekst to zsyntezowania jako wstep
+- Dodaj na koniec zamiast na poczatek.
+**13. Czekanie na zakończenie działania**
+- Argumenty reprezentuja programy a nie PIDy (mozna zrobic normalne rozpoznawanie argumentow i pominac ta flage)
+- Co jaki czas sprawdzamy czy sie zakonczylo. Inny niz domyslny 5min
+- Wykonaj akcje gdy przynajmniej jeden sie zakonczyl a nie wszystkie.
+- Komanda jaka ma zostac wykonana po spelnieiu akcji. (pamietamy ze agumenty to te PIDy które sie zakonczyly, uwazamy z flaga wyżej)
+**14. Morse**
+- Odczytanie danych z pliku zamiast stdin.
+- Zapisanie wyjscia do pliku zamiast na stdout.
+- Możliwosć zdefiniowania pliku który będzie zawierał reprezentację alfabetu morsa. 
+* przełącznik na wydawanie dźwięków (aplay)
