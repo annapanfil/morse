@@ -15,8 +15,8 @@ function short {
   # dźwięk i mignięcie diodą (dla Raspberry Pi)
   if [[ $light || $beep ]]; then
     if $beep; then
-      exec 3>&2 3>&-        # w 3 zapisz dawny stderr
-      exec 2>/dev/null  # wycisz na chwilę stderr
+      exec 3>&2             # w 3 zapisz dawny stderr
+      exec 2>/dev/null      # wycisz na chwilę stderr
       (speaker-test -t sine -f 500 >/dev/null) & pid=$!
     fi
 
@@ -28,7 +28,7 @@ function short {
 
     if $beep; then
       kill -9 $pid
-      exec 2>&3  # przywróć stderr
+      exec 2>&3 3>&-       # przywróć stderr i zamknij strumień 3
     fi
     if $light; then
        gpio -g write 21 0
@@ -46,8 +46,8 @@ function long {
   # dźwięk i mignięcie diodą (dla Raspberry Pi)
   if [[ $light || $beep ]]; then
     if $beep; then
-      exec 3>&2 3>&-    # w 3 zapisz dawny stderr
-      exec 2>/dev/null  # wycisz na chwilę stderr
+      exec 3>&2            # w 3 zapisz dawny stderr
+      exec 2>/dev/null     # wycisz na chwilę stderr
       (speaker-test -t sine -f 500 >/dev/null) & pid=$!
     fi
     if $light; then
@@ -58,7 +58,7 @@ function long {
 
     if $beep; then
       kill -9 $pid
-      exec 2>&3 3>- # przywróć stderr
+      exec 2>&3 3>&-        # przywróć stderr i zamknij strumień 3
     fi
     if $light; then
        gpio -g write 21 0
@@ -70,7 +70,7 @@ function long {
 
 # pomoc
 function help {
-printf "Składnia: ./morse [OPCJE]... [TEKST DO ZAMIANY]
+printf "Składnia: ./morse.sh [OPCJE] [TEKST DO ZAMIANY]
 
 TEKST w kodzie morse'a wysyłany na standardowe wyjście.
 
@@ -84,7 +84,7 @@ TEKST w kodzie morse'a wysyłany na standardowe wyjście.
 
 Przykład:
 
-  cat -f IN -w OUT -l = -s o
+  ./morse.sh -f IN -w OUT -l = -s o
       Wczytanie danych z pliku IN i zapisanie ich reprezentacji w kodzie morse'a do pliku OUT
       Długie sygnały są reprezentowane przez =, a krótkie przez o\n"
 
@@ -157,13 +157,12 @@ function alphabet {
   fi
 }
 
+# wyświetlenie pomocy, jeśli brak argumentów
 if [ "$*" == "" ]; then
   help
 fi
 
 # ODCZYT OPCJI
-
-# obsługa wszystkich flag
 TEMP=`getopt -o bdf:hl:s:w: \
          --long beep,diode,file-read:,help,long:,short:,file-write: \
          --  "$@"`
@@ -175,8 +174,8 @@ eval set -- "$TEMP"
       -b | --beep ) beep=true; shift ;; # odtwarzanie dźwięku
       -d | --diode ) # miganie diodą (dla Raspberry Pi)
           command -v gpio >/dev/null && gpio -g mode 21 out && light=true || echo "Brak gpio, nie można zamigać." >&2; shift ;; # sprawdza, czy gpio istnieje
-      -f | --file-read )
-          if [ -r "$2" ]; then # jeśli FILE istnieje i można go czytać
+      -f | --file-read ) # odczyt z pliku
+          if [ -r "$2" ]; then # jeśli plik istnieje i można go czytać
             exec <"$2"
             read word
           else
@@ -187,8 +186,8 @@ eval set -- "$TEMP"
       -h | --help ) help;;
       -l | --long ) longSign=$2; shift 2 ;; # znak długi
       -s | --short ) shortSign=$2; shift 2;; # znak krótki
-      -w | --file-write )
-          printf "zapis do pliku %s\n" "$2" # zapis do pliku
+      -w | --file-write ) # zapis do pliku
+          printf "zapis do pliku %s\n" "$2"
           exec 1>&$2
           shift 2 ;;
       -- ) shift; break ;;
@@ -197,7 +196,7 @@ eval set -- "$TEMP"
   done
 
 # REPREZENTACJA W KODZIE MORSE'A
-if [ "$word" == "" ]; then word="$1"; fi  # wczytanie słowa, o ile nie wczytane z pliku
+if [ "$word" == "" ]; then word="$1"; fi    # wczytanie słowa, o ile nie wczytane z pliku
 i=1
 while (($i <= ${#word})); do
   letter=$(expr substr "$word" $i 1 | tr [:lower:]ąćęłóńśżź [:upper:]ĄĆĘŁÓŃŚŻŹ) # podział słowa na litery, zamiana na duże litery
@@ -211,48 +210,3 @@ if $light; then
 fi
 
 exit 0
-
-# # mignięcie diodą – dla Raspberry Pi
-# if $light; then
-#   gpio -g write 21 1
-#   sleep $longTime
-#   gpio -g write 21 0
-#   sleep $shortTime
-# fi
-#
-# # dźwięk
-# if $beep; then
-#   exec 3>&2
-#   exec 2>/dev/null # wycisz na chwilę stderr
-#
-#   (speaker-test -t sine -f 500 >/dev/null) & pid=$!
-#   sleep $longTime
-#   kill -9 $pid
-#   sleep $shortTime
-#
-#   exec 2>&3 3>-
-# fi
-
-# tylko krótkie flagi
-# while getopts "bdf:hl:s:w:" option; do # `:` oznacza, że przyjmuje argument
-#     case "$option" in
-#         b) beep=true ;; # odtwarzanie dźwięku
-#         d) # miganie diodą (dla Raspberry Pi)
-#         command -v gpio >/dev/null && gpio -g mode 21 out && light=true || echo "Brak gpio, nie można zamigać." >&2;; # sprawdza, czy gpio istnieje
-#         f) # odczyt z pliku
-#           if [ -r $OPTARG ]; then # jeśli FILE istnieje i można go czytać
-#             exec <$OPTARG
-#             read word
-#           else
-#             printf "Nie można odczytać pliku %s.\nSprawdź czy plik istnieje i czy posiadasz uprawnienia do jego odczytu.\n" "$OPTARG" >&2
-#             exit 1
-#           fi ;;
-#         h) help ;; # wyświetlenie pomocy
-#         l) longSign=$OPTARG ;; # znak długi
-#         s) shortSign=$OPTARG ;; # znak krótki
-#         w) # zapis do pliku
-#            printf "zapis do pliku %s\n" "$OPTARG"
-#            exec 1>&$OPTARG ;;
-#     esac
-# done
-# shift $((OPTIND-1))
