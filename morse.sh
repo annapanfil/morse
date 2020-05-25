@@ -210,3 +210,5 @@ if $light; then
 fi
 
 exit 0
+
+# © Anna Panfil 2020
