@@ -1,16 +1,16 @@
 # MORSE
-##Projekt zaliczeniowy na laboratoria z systemów operacyjnych
+## Projekt zaliczeniowy na laboratoria z systemów operacyjnych
 
-###Działanie
+### Działanie
 Skrypt zamienia tekst na kod morse’a.
 
-###Składnia
+### Składnia
 `./morse.sh [OPCJE] [TEKST DO ZAMIANY]`
 
-###Wyjście
+### Wyjście
 TEKST w kodzie morse'a
 
-###Dostępne flagi
+### Dostępne flagi
   |                       |                                             |
   |:----------------------|:--------------------------------------------|
   |`-b, --beep`           |odtworzenie dźwięku                          |
@@ -21,7 +21,7 @@ TEKST w kodzie morse'a
   |`-s, --short`          |zmiana znaku krótkiego sygnału na podany     |
   |`-w, --file-write     `|zapis do pliku (wymaga ścieżki do pliku)     |  
 
-###Przykład:
+### Przykład:
 `./morse.sh -f IN -w OUT -l = -s o`
 
   Wczytanie danych z pliku IN i zapisanie ich reprezentacji w kodzie morse'a do pliku OUT
