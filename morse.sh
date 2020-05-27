@@ -4,8 +4,8 @@ longTime=$(echo 3*$shortTime | bc)
 longSign="–"
 shortSign="·"
 word=""
-beep=false
-light=false
+beep="false"        # przypisuję do beep string "false" (który może być też interpretowany jako komenda false (która zwraca stan 1))
+light="false"
 
 # krótki sygnał
 function short {
@@ -13,21 +13,22 @@ function short {
   echo -n $shortSign
 
   # dźwięk i mignięcie diodą (dla Raspberry Pi)
-  if [[ $light || $beep ]]; then
+  if ($light || $beep); then            # operuje na komendach true i false (przechowywanych w zmiennych)
     if $beep; then
       exec 3>&2             # w 3 zapisz dawny stderr
       exec 2>/dev/null      # wycisz na chwilę stderr
       (speaker-test -t sine -f 500 >/dev/null) & pid=$!
     fi
 
-    if $light; then
+    if [[ $light == "true" ]]; then     # operuje na porównywaniu stringów
        gpio -g write 21 1
     fi
 
     sleep $shortTime
 
-    if $beep; then
+    if $beep; then                      # a tu na komendzie przechowywanej w beep
       kill -9 $pid
+      sleep 0
       exec 2>&3 3>&-       # przywróć stderr i zamknij strumień 3
     fi
     if $light; then
@@ -44,7 +45,7 @@ function long {
   echo -n $longSign
 
   # dźwięk i mignięcie diodą (dla Raspberry Pi)
-  if [[ $light || $beep ]]; then
+  if ($light || $beep); then
     if $beep; then
       exec 3>&2            # w 3 zapisz dawny stderr
       exec 2>/dev/null     # wycisz na chwilę stderr
@@ -58,6 +59,7 @@ function long {
 
     if $beep; then
       kill -9 $pid
+      sleep 0
       exec 2>&3 3>&-        # przywróć stderr i zamknij strumień 3
     fi
     if $light; then
@@ -65,6 +67,7 @@ function long {
     fi
 
     sleep $shortTime
+
   fi
 }
 
@@ -147,12 +150,12 @@ function alphabet {
     [ZŻŹ])long; long; short; short; echo -n " "
       ;;
     [" "])echo ""
-      if [[ $beep || $light ]]; then
+      if ($light || $beep); then
         sleep $(echo 2*$shortTime | bc) #2 są później
       fi;;
   esac
 
-  if [[ $beep || $light ]]; then
+  if ($light || $beep); then
     sleep $(echo 2*$shortTime | bc)
   fi
 }
