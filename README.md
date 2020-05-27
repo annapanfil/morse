@@ -21,7 +21,9 @@ TEKST w kodzie morse'a
   |`-s, --short`          |zmiana znaku krótkiego sygnału na podany     |
   |`-w, --file-write     `|zapis do pliku (wymaga ścieżki do pliku)     |  
 
-### Przykład:
+### Przykłady:
+`./morse.sh --beep "hello world"`
+
 `./morse.sh -f IN -w OUT -l = -s o`
 
   Wczytanie danych z pliku IN i zapisanie ich reprezentacji w kodzie morse'a do pliku OUT
